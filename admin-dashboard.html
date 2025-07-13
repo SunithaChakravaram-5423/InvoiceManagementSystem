@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Dashboard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #d7faff, #ffe1e1);
+      color: #004d40;
+    }
+
+    header {
+      background-color: #004d40;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      font-size: 18px;
+    }
+
+    .logout-btn {
+      background-color: #ff6f61;
+      border: none;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .logout-btn:hover {
+      background-color: #e65c50;
+    }
+
+    main {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1.1rem;
+      color: #555;
+    }
+
+    .cards {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 40px;
+      margin-top: 50px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      padding: 30px;
+      width: 250px;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+    }
+
+    .card-icon {
+      font-size: 40px;
+      margin-bottom: 15px;
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .card a {
+      text-decoration: none;
+      background-color: #00796b;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 8px;
+      display: inline-block;
+      margin-top: 10px;
+      transition: background 0.3s;
+    }
+
+    .card a:hover {
+      background-color: #00695c;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 60px;
+      margin-bottom: 0;
+      padding: 20px;
+      background: #004d40;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div>👋 Welcome, <strong id="user-role">Admin</strong></div>
+    <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+  </header>
+
+  <main>
+    <h1>Welcome, Admin 👑</h1>
+    <p>You have full access to the invoice management system.</p>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">➕</div>
+        <div class="card-title">Add Invoice</div>
+        <a href="add-invoice.html">Go</a>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">📄</div>
+        <div class="card-title">View Invoices</div>
+        <a href="view-invoices.html">Go</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    © 2025 Invoice Management System | Admin Dashboard
+  </footer>
+
+  <script>
+    const role = localStorage.getItem("userRole");
+    if (role !== "admin") {
+      alert("❌ Unauthorized. Only admins can access this dashboard.");
+      window.location.href = "login.html";
+    }
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = "login.html";
+    }
+  </script>
+
+</body>
+</html>

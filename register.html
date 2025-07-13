@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Register</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #ffe0e0, #e0f7fa);
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      text-align: center;
+      padding: 25px 0;
+      background: #004d40;
+      color: white;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.3rem;
+    }
+
+    header p {
+      margin: 5px 0 0;
+      font-size: 1.1rem;
+    }
+
+    .main-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 40px auto;
+      max-width: 900px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .image-side {
+      flex: 1;
+      background: #f9f9f9;
+      padding: 20px;
+    }
+
+    .image-side img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .register-container {
+      flex: 1;
+      padding: 32px;
+    }
+
+    .register-container h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #004d40;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #00796b;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #00695c;
+    }
+
+    .message {
+      color: red;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .link {
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .link a {
+      color: green;
+      text-decoration: none;
+    }
+
+    .link a:hover {
+      text-decoration: underline;
+    }
+
+    section {
+      max-width: 600px;
+      margin: 40px auto 0;
+      text-align: center;
+      padding: 20px;
+    }
+
+    section h3 {
+      color: #00796b;
+      margin-bottom: 10px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px 0;
+      background: #004d40;
+      color: white;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Invoice Management System</h1>
+    <p>Manage your invoices with ease and confidence</p>
+  </header>
+
+  <div class="main-container">
+    <div class="image-side">
+      <img src="ims_picture.png" alt="IMS Overview" />
+    </div>
+
+    <div class="register-container">
+      <h2>Create Account</h2>
+      <form id="registerForm">
+        <input type="text" name="name" placeholder="Full Name" required />
+        <input type="email" name="email" placeholder="Email" required />
+        <input type="password" name="password" placeholder="Password" required />
+        <input type="password" name="confirmPassword" placeholder="Confirm Password" required />
+
+        <select name="role" required>
+          <option value="" disabled selected>Select Role</option>
+          <option value="admin">Admin</option>
+          <option value="editor">Editor</option>
+          <option value="viewer">Viewer</option>
+        </select>
+
+        <button type="submit">Register</button>
+        <p class="message" id="message"></p>
+      </form>
+
+      <div class="link">
+        Already registered? <a href="login.html">Login</a>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <h3>About Us</h3>
+    <p>
+      This system is built to help businesses and individuals generate, manage, and track invoices easily.
+      Built with user-friendliness and simplicity at its core, we ensure a smooth financial workflow for all.
+    </p>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Invoice Management System | Designed by Sunitha Chakravaram!!</p>
+  </footer>
+
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const name = this.name.value.trim();
+      const email = this.email.value.trim().toLowerCase();
+      const password = this.password.value;
+      const confirmPassword = this.confirmPassword.value;
+      const role = this.role.value;
+      const messageEl = document.getElementById('message');
+
+      if (password !== confirmPassword) {
+        messageEl.textContent = "❗ Passwords do not match!";
+        return;
+      }
+
+      if (localStorage.getItem(email)) {
+        messageEl.textContent = "❗ Email is already registered.";
+        return;
+      }
+
+      const user = { name, email, password, role };
+      localStorage.setItem(email, JSON.stringify(user));
+
+      messageEl.style.color = "green";
+      messageEl.textContent = "✅ Registration successful! Redirecting to login...";
+      setTimeout(() => {
+        window.location.href = "login.html";
+      }, 1500);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Contact Us</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f5f7fa;
+    margin: 0; padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  .contact-form {
+    background: white;
+    padding: 30px 40px;
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 400px;
+  }
+  .contact-form h2 {
+    margin-bottom: 20px;
+    color: #2c3e50;
+    text-align: center;
+  }
+  .contact-form label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #34495e;
+  }
+  .contact-form input,
+  .contact-form textarea {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 18px;
+    border: 1.5px solid #ccc;
+    border-radius: 4px;
+    font-size: 15px;
+    transition: border-color 0.3s ease;
+  }
+  .contact-form input:focus,
+  .contact-form textarea:focus {
+    border-color: #2980b9;
+    outline: none;
+  }
+  .contact-form textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+  .contact-form button {
+    width: 100%;
+    background-color: #1c5980;
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background-color 0.3s ease;
+  }
+  .contact-form button:hover {
+    background-color: #1c5980;
+  }
+  .error {
+    color: #e74c3c;
+    font-size: 14px;
+    margin-top: -14px;
+    margin-bottom: 10px;
+  }
+</style>
+</head>
+<body>
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <form class="contact-form" id="contactForm" novalidate>
+    <h2>Contact Us - Invoice Management System</h2>
+    <label for="name">Name *</label>
+    <input type="text" id="name" name="name" required />
+    <div class="error" id="nameError"></div>
+
+    <label for="email">Email *</label>
+    <input type="email" id="email" name="email" required />
+    <div class="error" id="emailError"></div>
+
+    <label for="subject">Subject *</label>
+    <input type="text" id="subject" name="subject" required />
+    <div class="error" id="subjectError"></div>
+
+    <label for="message">Message *</label>
+    <textarea id="message" name="message" required></textarea>
+    <div class="error" id="messageError"></div>
+
+    <button type="submit">Send Message</button>
+  </form>
+
+<script>
+  const form = document.getElementById('contactForm');
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    let valid = true;
+
+    // Clear errors
+    ['name', 'email', 'subject', 'message'].forEach(field => {
+      document.getElementById(field + 'Error').textContent = '';
+    });
+
+    // Name validation
+    if (!form.name.value.trim()) {
+      document.getElementById('nameError').textContent = 'Please enter your name.';
+      valid = false;
+    }
+
+    // Email validation
+    const emailVal = form.email.value.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailVal) {
+      document.getElementById('emailError').textContent = 'Please enter your email.';
+      valid = false;
+    } else if (!emailRegex.test(emailVal)) {
+      document.getElementById('emailError').textContent = 'Please enter a valid email.';
+      valid = false;
+    }
+
+    // Subject validation
+    if (!form.subject.value.trim()) {
+      document.getElementById('subjectError').textContent = 'Please enter the subject.';
+      valid = false;
+    }
+
+    // Message validation
+    if (!form.message.value.trim()) {
+      document.getElementById('messageError').textContent = 'Please enter your message.';
+      valid = false;
+    }
+
+    if (valid) {
+      alert('Thank you for contacting us! We will get back to you soon.');
+      form.reset();
+    }
+  });
+</script>
+</body>
+</html>

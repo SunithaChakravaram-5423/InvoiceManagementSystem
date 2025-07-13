@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create New Invoice</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #e0f7fa, #fce4ec, #fff3e0);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      background-color: #004d40;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      font-size: 15px;
+      border-bottom: 2px solid #00796b;
+    }
+
+    .topbar button {
+      background-color: #00796b;
+      border: none;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .topbar button:hover {
+      background-color: #00695c;
+    }
+
+    header {
+      background: linear-gradient(to right, #004d40, #00695c);
+      color: white;
+      padding: 10px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    main {
+      flex-grow: 1;
+      padding: 30px 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    form {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    input[type="date"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    @media (min-width: 770px) {
+      .form-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .items-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    @media (min-width: 770px) {
+      .items-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .section-title {
+      font-size: 18px;
+      color: #00695c;
+      margin-bottom: 16px;
+      font-weight: bold;
+    }
+
+    .btn {
+      padding: 10px 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      transform: scale(1.02);
+      opacity: 0.9;
+    }
+
+    .btn-save {
+      background-color: #2e7d32;
+      color: white;
+      width: 100%;
+    }
+
+    .btn-add {
+      background-color: #2196f3;
+      color: white;
+      margin-bottom: 20px;
+    }
+
+    .btn-back {
+      background-color: #00695c;
+      color: white;
+      margin-bottom: 20px;
+    }
+
+    footer {
+      background-color: #004d40;
+      color: white;
+      text-align: center;
+      padding: 12px;
+      font-size: 14px;
+    }
+
+    .footer-highlight {
+      color: #ffb6c1;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="topbar">
+    <div>👋 Welcome, <span id="user-role">Editor</span></div>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <header>
+    <h1>Create New Invoice</h1>
+  </header>
+
+  <main>
+    <button onclick="history.back()" class="btn btn-back">⬅️ Back</button>
+    <form id="invoiceForm">
+      <div class="form-grid">
+        <div>
+          <label>Client Name</label>
+          <input type="text" name="clientName" required />
+        </div>
+        <div>
+          <label>Client Email</label>
+          <input type="email" name="clientEmail" required />
+        </div>
+        <div>
+          <label>Invoice Number</label>
+          <input type="text" name="invoiceNumber" required />
+        </div>
+        <div>
+          <label>Issue Date</label>
+          <input type="date" name="issueDate" required />
+        </div>
+        <div>
+          <label>Due Date</label>
+          <input type="date" name="dueDate" required />
+        </div>
+      </div>
+
+      <h2 class="section-title">Invoice Items</h2>
+      <div id="itemsContainer">
+        <div class="items-grid">
+          <input type="text" placeholder="Description" name="description[]" required />
+          <input type="number" placeholder="Qty" name="quantity[]" min="1" required />
+          <input type="number" placeholder="Unit Price" name="unitPrice[]" step="0.01" required />
+        </div>
+      </div>
+
+      <button type="button" onclick="addItem()" class="btn btn-add">➕ Add Item</button>
+      <button type="submit" class="btn btn-save">💾 Save Invoice</button>
+    </form>
+  </main>
+
+  <footer>
+    &copy; 2025 Invoice Management System | Designed by 
+    <span class="footer-highlight">Sunitha Chakravaram!!</span>
+  </footer>
+
+  <script>
+    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+    const roleEl = document.getElementById("user-role");
+
+    if (!loggedInUser || (loggedInUser.role !== "admin" && loggedInUser.role !== "editor")) {
+      alert("❌ Access Denied: Only Admin and Editors can access this page.");
+      window.location.href = "login.html";
+    } else {
+      roleEl.textContent = loggedInUser.role.toUpperCase();
+    }
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = 'login.html';
+    }
+
+    function addItem() {
+      const container = document.getElementById("itemsContainer");
+
+      const newRow = document.createElement("div");
+      newRow.className = "items-grid";
+
+      newRow.innerHTML = `
+        <input type="text" placeholder="Description" name="description[]" required />
+        <input type="number" placeholder="Qty" name="quantity[]" min="1" required />
+        <input type="number" placeholder="Unit Price" name="unitPrice[]" step="0.01" required />
+      `;
+
+      container.appendChild(newRow);
+    }
+
+    document.getElementById("invoiceForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const form = e.target;
+
+      const invoiceData = {
+        clientName: form.clientName.value,
+        clientEmail: form.clientEmail.value,
+        invoiceNumber: form.invoiceNumber.value,
+        issueDate: form.issueDate.value,
+        dueDate: form.dueDate.value,
+        items: []
+      };
+
+      const descriptions = form.querySelectorAll('input[name="description[]"]');
+      const quantities = form.querySelectorAll('input[name="quantity[]"]');
+      const unitPrices = form.querySelectorAll('input[name="unitPrice[]"]');
+
+      for (let i = 0; i < descriptions.length; i++) {
+        invoiceData.items.push({
+          description: descriptions[i].value,
+          quantity: parseInt(quantities[i].value),
+          unitPrice: parseFloat(unitPrices[i].value)
+        });
+      }
+
+      try {
+        const response = await fetch("http://localhost:3000/api/invoices", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(invoiceData)
+        });
+
+        if (response.ok) {
+          alert("✅ Invoice saved successfully!");
+          form.reset();
+          document.getElementById("itemsContainer").innerHTML = "";
+          addItem();
+        } else {
+          alert("❌ Failed to save invoice.");
+        }
+      } catch (err) {
+        console.error("Error saving invoice:", err);
+        alert("⚠️ Server error occurred.");
+      }
+    });
+  </script>
+</body>
+</html>

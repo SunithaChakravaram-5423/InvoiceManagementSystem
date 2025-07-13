@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #ffe0e0, #e0f7fa);
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      text-align: center;
+      padding: 25px 0;
+      background: #004d40;
+      color: white;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.3rem;
+    }
+
+    header p {
+      margin: 5px 0 0;
+      font-size: 1.2rem;
+    }
+
+    .main-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 40px auto;
+      max-width: 900px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .image-side {
+      flex: 1;
+      background: #f9f9f9;
+      padding: 20px;
+    }
+
+    .image-side img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .login-container {
+      flex: 1;
+      padding: 30px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #004d40;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #00796b;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #00695c;
+    }
+
+    .message {
+      color: red;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .link {
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .link a {
+      color: green;
+      text-decoration: none;
+    }
+
+    .link a:hover {
+      text-decoration: underline;
+    }
+
+    section {
+      max-width: 600px;
+      margin: 40px auto 0;
+      text-align: center;
+      padding: 20px;
+    }
+
+    section h3 {
+      color: #00796b;
+      margin-bottom: 10px;
+    }
+
+    section p {
+      color: #444;
+      font-size: 1rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px 0;
+      background: #004d40;
+      color: white;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Invoice Management System</h1>
+    <p>Manage your invoices with ease and confidence</p>
+  </header>
+
+  <!-- Flex layout -->
+  <div class="main-container">
+    <div class="image-side">
+      <img src="ims_picture.png" alt="IMS Overview" />
+    </div>
+
+    <div class="login-container">
+      <h2>Login</h2>
+      <form id="loginForm">
+        <input type="email" name="email" placeholder="Email" required />
+        <input type="password" name="password" placeholder="Password" required />
+        <button type="submit">Login</button>
+        <p class="message" id="message"></p>
+      </form>
+      <div class="link">
+        Don't have an account? <a href="register.html">Register</a>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <h3>Welcome Back!</h3>
+    <p>
+      Access your dashboard, manage invoices, and stay on top of your financial records. Secure and seamless experience awaits.
+    </p>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Invoice Management System | Designed by Sunitha Chakravaram!!</p>
+  </footer>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const email = this.email.value.trim().toLowerCase();
+      const password = this.password.value;
+      const messageEl = document.getElementById('message');
+
+      const userData = localStorage.getItem(email);
+
+      if (!userData) {
+        messageEl.style.color = "red";
+        messageEl.textContent = "❗ Email not found. Please register first.";
+        return;
+      }
+
+      const user = JSON.parse(userData);
+
+      if (user.password !== password) {
+        messageEl.style.color = "red";
+        messageEl.textContent = "❗ Incorrect password.";
+        return;
+      }
+
+      localStorage.setItem("loggedInUser", JSON.stringify(user));
+      localStorage.setItem("userRole", user.role);
+
+      messageEl.style.color = "green";
+      messageEl.textContent = "✅ Login successful! Redirecting...";
+
+      setTimeout(() => {
+        if (user.role === "admin") {
+          window.location.href = "admin-dashboard.html";
+        } else if (user.role === "editor") {
+          window.location.href = "add-invoice.html";
+        } else {
+          window.location.href = "view-invoices.html";
+        }
+      }, 1500);
+    });
+  </script>
+
+</body>
+</html>

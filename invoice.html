@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Invoice Preview</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #ffe0e0, #e0f7fa);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header, footer {
+      background-color: #004d40;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 30px;
+    }
+
+    .invoice-box {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      max-width: 800px;
+      width: 100%;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    h2, h3 {
+      margin-top: 0;
+      color: #222;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #004d40;
+      color: white;
+      font-weight: bold;
+    }
+
+    #printBtn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #004d40;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #printBtn:hover {
+      background-color: #00695c;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Invoice Management System</h1>
+    <p>Manage your invoices with ease and confidence</p>
+  </header>
+
+  <div class="container">
+    <div class="invoice-box">
+      <h2>Invoice Preview</h2>
+      <div id="invoiceDetails"></div>
+
+      <h3>Items</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Quantity</th>
+            <th>Unit Price</th>
+          </tr>
+        </thead>
+        <tbody id="itemsTableBody"></tbody>
+      </table>
+      <p class="text-right text-lg font-semibold mt-4 mb-2">
+      Total Amount: <span id="totalAmount">₹N/A</span>
+      </p>
+
+      <button id="printBtn" onclick="window.print()">🖨️ Print Invoice</button>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Invoice Management System | Designed by Sunitha Chakravaram!!</p>
+  </footer>
+
+  <script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const invoiceId = urlParams.get("id");
+
+  fetch(`http://localhost:3000/invoices/${invoiceId}`)
+    .then(response => response.json())
+    .then(data => {
+      const invoiceDetails = document.getElementById("invoiceDetails");
+      const itemsBody = document.getElementById("itemsTableBody");
+      const totalAmountSpan = document.getElementById("totalAmount");
+
+      // Fill invoice header info (excluding amount here)
+      invoiceDetails.innerHTML = `
+        <p><strong>Client:</strong> ${data.client_name}</p>
+        <p><strong>Email:</strong> ${data.client_email}</p>
+        <p><strong>Invoice Number:</strong> ${data.invoice_number}</p>
+        <p><strong>Issue Date:</strong> ${data.issue_date.split("T")[0]}</p>
+        <p><strong>Due Date:</strong> ${data.due_date.split("T")[0]}</p>
+      `;
+
+      // Calculate total
+      let total = 0;
+
+      data.items?.forEach(item => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${item.description}</td>
+          <td>${item.quantity}</td>
+          <td>₹${parseFloat(item.unit_price).toFixed(2)}</td>
+        `;
+        itemsBody.appendChild(row);
+
+        total += item.quantity * item.unit_price;
+      });
+
+      // Set total in span
+      totalAmountSpan.textContent = `₹${total.toFixed(2)}`;
+    });
+</script>
+
+</body>
+</html>

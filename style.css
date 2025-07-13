@@ -1,0 +1,158 @@
+/* Resetting some defaults */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f4f6f8;
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.dashboard-container {
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+header h1 {
+  margin-bottom: 30px;
+  font-size: 2rem;
+  color: #2c3e50;
+}
+
+.dashboard-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.btn {
+  text-decoration: none;
+  padding: 15px 25px;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.primary-btn {
+  background-color: #2ecc71;
+  color: #fff;
+}
+
+.primary-btn:hover {
+  background-color: #27ae60;
+  transform: scale(1.05);
+}
+
+.secondary-btn {
+  background-color: #3498db;
+  color: #fff;
+}
+
+.secondary-btn:hover {
+  background-color: #2980b9;
+  transform: scale(1.05);
+}
+
+form {
+  max-width: 600px;
+  margin: auto;
+  text-align: left;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.item-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.item-row input {
+  flex: 1;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 30px;
+}
+
+th, td {
+  padding: 12px 15px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+th {
+  background-color: #007bff;
+  color: white;
+}
+
+.status.paid {
+  color: green;
+  font-weight: bold;
+}
+
+.status.unpaid {
+  color: red;
+  font-weight: bold;
+}
+
+.action-btn {
+  margin-right: 8px;
+  text-decoration: none;
+  color: #007bff;
+}
+
+.action-btn.delete {
+  color: red;
+}
+.invoice-box {
+  max-width: 800px;
+  margin: auto;
+  background: white;
+  padding: 30px;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.invoice-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  font-size: 16px;
+}
+
+tfoot td {
+  background-color: #f9f9f9;
+  font-weight: bold;
+}
+
+.footer {
+  margin-top: 30px;
+  text-align: right;
+}
