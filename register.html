@@ -24,11 +24,6 @@
       font-size: 2.3rem;
     }
 
-    header p {
-      margin: 5px 0 0;
-      font-size: 1.1rem;
-    }
-
     .main-container {
       display: flex;
       justify-content: center;
@@ -50,7 +45,6 @@
     .image-side img {
       width: 100%;
       height: auto;
-      display: block;
     }
 
     .register-container {
@@ -66,8 +60,7 @@
 
     input[type="text"],
     input[type="email"],
-    input[type="password"],
-    select {
+    input[type="password"] {
       width: 100%;
       padding: 10px;
       margin-bottom: 15px;
@@ -132,6 +125,7 @@
   </style>
 </head>
 <body>
+
   <header>
     <h1>Invoice Management System</h1>
     <p>Manage your invoices with ease and confidence</p>
@@ -145,21 +139,14 @@
     <div class="register-container">
       <h2>Create Account</h2>
       <form id="registerForm">
-        <input type="text" name="name" placeholder="Full Name" required />
-        <input type="email" name="email" placeholder="Email" required />
-        <input type="password" name="password" placeholder="Password" required />
-        <input type="password" name="confirmPassword" placeholder="Confirm Password" required />
-
-        <select name="role" required>
-          <option value="" disabled selected>Select Role</option>
-          <option value="admin">Admin</option>
-          <option value="editor">Editor</option>
-          <option value="viewer">Viewer</option>
-        </select>
-
+        <input type="text" id="name" name="name" placeholder="Full Name" required />
+        <input type="email" id="email" name="email" placeholder="Email" required />
+        <input type="password" id="password" name="password" placeholder="Password" required />
+        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required />
         <button type="submit">Register</button>
-        <p class="message" id="message"></p>
       </form>
+
+      <div class="message" id="message"></div>
 
       <div class="link">
         Already registered? <a href="login.html">Login</a>
@@ -180,14 +167,13 @@
   </footer>
 
   <script>
-    document.getElementById('registerForm').addEventListener('submit', function(e) {
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
       e.preventDefault();
 
-      const name = this.name.value.trim();
-      const email = this.email.value.trim().toLowerCase();
-      const password = this.password.value;
-      const confirmPassword = this.confirmPassword.value;
-      const role = this.role.value;
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim().toLowerCase();
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
       const messageEl = document.getElementById('message');
 
       if (password !== confirmPassword) {
@@ -195,19 +181,29 @@
         return;
       }
 
-      if (localStorage.getItem(email)) {
-        messageEl.textContent = "❗ Email is already registered.";
-        return;
+      try {
+        const response = await fetch("http://localhost:3000/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          messageEl.style.color = "green";
+          messageEl.textContent = "✅ Registration successful! Redirecting to login...";
+          setTimeout(() => {
+            window.location.href = "login.html";
+          }, 1500);
+        } else {
+          messageEl.style.color = "red";
+          messageEl.textContent = data.error || "❗ Registration failed";
+        }
+      } catch (err) {
+        messageEl.style.color = "red";
+        messageEl.textContent = "❗ Server error. Try again later.";
       }
-
-      const user = { name, email, password, role };
-      localStorage.setItem(email, JSON.stringify(user));
-
-      messageEl.style.color = "green";
-      messageEl.textContent = "✅ Registration successful! Redirecting to login...";
-      setTimeout(() => {
-        window.location.href = "login.html";
-      }, 1500);
     });
   </script>
 </body>

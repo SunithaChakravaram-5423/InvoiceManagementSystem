@@ -86,163 +86,166 @@
       color: white;
     }
 
-  .topbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    background-color: #004d40;
-    color: white;
-    display: flex;
-    justify-content: space-between; 
-    align-items: center;
-    padding: 12px 20px;
-    font-size: 16px;
-    border-bottom: 2px solid #00796b;
-    z-index: 1000;
-  }
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background-color: #004d40;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-bottom: 2px solid #00796b;
+      z-index: 1000;
+    }
 
+    .topbar button {
+      background-color: #00796b;
+      border: none;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+    }
 
-  .topbar button {
-    background-color: #00796b;
-    border: none;
-    color: white;
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-size: 14px;
-    cursor: pointer;
-  }
-
-  .topbar button:hover {
-    background-color: #00695c;
-  }
-
+    .topbar button:hover {
+      background-color: #00695c;
+    }
   </style>
 </head>
 <body>
 
-  <div class="topbar">
-  <div>
-    👋 Welcome, <span id="user-role">Viewer</span>
-  </div>
+<div class="topbar">
+  <div>👋 Welcome, <span id="user-role">Viewer</span></div>
   <button onclick="logout()">🚪 Logout</button>
-  </div>
+</div>
 
-  <div class="container">
-    <button onclick="history.back()" class="btn">⬅️ Back</button>
-    <h1>All Invoices</h1>
+<div class="container">
+  <button onclick="history.back()" class="btn">⬅️ Back</button>
+  <h1>All Invoices</h1>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Invoice No</th>
-          <th>Client Name</th>
-          <th>Email</th>
-          <th>Issue Date</th>
-          <th>Due Date</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="invoice-table-body"></tbody>
-    </table>
-  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Invoice No</th>
+        <th>Client Name</th>
+        <th>Email</th>
+        <th>Issue Date</th>
+        <th>Due Date</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="invoice-table-body"></tbody>
+  </table>
+</div>
 
-  <script>
-    function loadInvoices() {
-  fetch('http://127.0.0.1:3000/invoices')
-    .then(response => response.json())
-    .then(data => {
-      const tableBody = document.getElementById('invoice-table-body');
-      tableBody.innerHTML = '';
-      const role = localStorage.getItem("userRole");
+<script>
+  const token = localStorage.getItem("token");
+  const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+  const roleEl = document.getElementById("user-role");
 
-      data.forEach(invoice => {
-  const dueDate = new Date(invoice.due_date);
-  const today = new Date();
-
-  let status = "";
-  let statusColor = "";
-
-  if (invoice.paid) {
-    status = "Paid";
-    statusColor = "green";
-  } else if (dueDate < today) {
-    status = "Overdue";
-    statusColor = "red";
+  if (!token || !loggedInUser || (loggedInUser.role !== "admin" && loggedInUser.role !== "viewer")) {
+    alert("❌ Access Denied: Only Admins and Viewers can access this page.");
+    window.location.href = "login.html";
   } else {
-    status = "Unpaid";
-    statusColor = "orange";
+    roleEl.textContent = loggedInUser.role.toUpperCase();
   }
 
-  let actions = `<a href="invoice.html?id=${invoice.id}">🔍 View</a>`;
-
-  if (role === "admin" || role === "editor") {
-    actions += ` <button class="delete-btn" onclick="deleteInvoice(${invoice.id})">🗑️ Delete</button>`;
+  function logout() {
+    localStorage.clear();
+    window.location.href = "login.html";
   }
 
-  const row = `
-    <tr>
-      <td>INV-${String(invoice.id).padStart(3, '0')}</td>
-      <td>${invoice.client_name}</td>
-      <td>${invoice.client_email}</td>
-      <td>${invoice.issue_date}</td>
-      <td>${invoice.due_date}</td>
-      <td style="color: ${statusColor}; font-weight: bold;">${status}</td>
-      <td>${actions}</td>
-    </tr>
-  `;
-  tableBody.innerHTML += row;
-});
-    })
-    .catch(error => {
-      console.error('Error fetching invoices:', error);
+async function loadInvoices() {
+  try {
+    console.log("Token before fetch:", token); // 🔍 For Debugging
+
+    const response = await fetch("http://127.0.0.1:3000/api/invoices", {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
     });
+
+    if (!response.ok) {
+      if (response.status === 401) throw new Error("Unauthorized");
+      throw new Error("Failed to fetch invoices");
+    }
+
+    const data = await response.json();
+    const tableBody = document.getElementById("invoice-table-body");
+    tableBody.innerHTML = "";
+
+    data.forEach(invoice => {
+      const dueDate = new Date(invoice.due_date);
+      const today = new Date();
+
+      let status = "";
+      let statusColor = "";
+
+      if (invoice.paid) {
+        status = "Paid";
+        statusColor = "green";
+      } else if (dueDate < today) {
+        status = "Overdue";
+        statusColor = "red";
+      } else {
+        status = "Unpaid";
+        statusColor = "orange";
+      }
+
+      let actions = `<a href="invoice.html?id=${invoice.id}">🔍 View</a>`;
+      if (loggedInUser.role === "admin") {
+        actions += `<button class="delete-btn" onclick="deleteInvoice(${invoice.id})">🗑️ Delete</button>`;
+      }
+
+      const row = `
+        <tr>
+          <td>INV-${String(invoice.id).padStart(3, '0')}</td>
+          <td>${invoice.client_name}</td>
+          <td>${invoice.client_email}</td>
+          <td>${invoice.issue_date}</td>
+          <td>${invoice.due_date}</td>
+          <td style="color: ${statusColor}; font-weight: bold;">${status}</td>
+          <td>${actions}</td>
+        </tr>
+      `;
+      tableBody.innerHTML += row;
+    });
+
+  } catch (err) {
+    console.error("⚠️ Error fetching invoices:", err.message);
+    alert("⚠️ Failed to fetch invoices. Please login again.");
+    logout();
+  }
 }
 
 
-    function deleteInvoice(id) {
-      if (!confirm('Are you sure you want to delete this invoice?')) return;
+  function deleteInvoice(id) {
+    if (!confirm("Are you sure you want to delete this invoice?")) return;
 
-      fetch(`http://127.0.0.1:3000/invoices/${id}`, {
-        method: 'DELETE'
-      })
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to delete invoice');
-        alert('Invoice deleted successfully');
-        loadInvoices();
-      })
-      .catch(err => {
-        alert('Error deleting invoice: ' + err.message);
-      });
-    }
-    window.onload = loadInvoices;
-
-  
-    window.addEventListener("DOMContentLoaded", () => {
-      const role = localStorage.getItem("userRole");
-
-      if (role === "viewer") {
-        document.querySelectorAll(".edit-btn").forEach(btn => btn.style.display = "none");
-        document.querySelectorAll(".delete-btn").forEach(btn => btn.style.display = "none");
-        document.getElementById("addInvoiceBtn")?.remove(); // Remove "Add Invoice" if needed
-      }
+    fetch(`http://127.0.0.1:3000/api/invoices/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
+    })
+    .then(res => {
+      if (!res.ok) throw new Error("Failed to delete invoice");
+      alert("✅ Invoice deleted successfully");
+      loadInvoices();
+    })
+    .catch(err => {
+      alert("❌ Error deleting invoice: " + err.message);
     });
-    
-    const role = localStorage.getItem("userRole");
-    const roleEl = document.getElementById("user-role");
+  }
 
-    if (!role) {
-      alert("❌ Unauthorized access!");
-      window.location.href = "login.html";
-    } else {
-      roleEl.textContent = role.toUpperCase();
-    }
+  window.onload = loadInvoices;
+</script>
 
-    function logout() {
-      localStorage.clear();
-      window.location.href = "login.html";
-    }
-  </script>
 </body>
 </html>

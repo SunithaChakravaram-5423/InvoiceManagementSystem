@@ -219,85 +219,91 @@
     <span class="footer-highlight">Sunitha Chakravaram!!</span>
   </footer>
 
-  <script>
-    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-    const roleEl = document.getElementById("user-role");
+<script>
+  const token = localStorage.getItem("token");
+  const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+  const roleEl = document.getElementById("user-role");
 
-    if (!loggedInUser || (loggedInUser.role !== "admin" && loggedInUser.role !== "editor")) {
-      alert("❌ Access Denied: Only Admin and Editors can access this page.");
-      window.location.href = "login.html";
-    } else {
-      roleEl.textContent = loggedInUser.role.toUpperCase();
+  if (!token || !loggedInUser || (loggedInUser.role !== "admin" && loggedInUser.role !== "editor")) {
+    alert("❌ Access Denied: Only Admins and Editors can access this page.");
+    window.location.href = "login.html";
+  } else {
+    roleEl.textContent = loggedInUser.role.toUpperCase();
+  }
+
+  function logout() {
+    localStorage.clear();
+    window.location.href = 'login.html';
+  }
+
+  function addItem() {
+    const container = document.getElementById("itemsContainer");
+
+    const newRow = document.createElement("div");
+    newRow.className = "items-grid";
+
+    newRow.innerHTML = `
+      <input type="text" placeholder="Description" name="description[]" required />
+      <input type="number" placeholder="Qty" name="quantity[]" min="1" required />
+      <input type="number" placeholder="Unit Price" name="unitPrice[]" step="0.01" required />
+    `;
+
+    container.appendChild(newRow);
+  }
+
+  document.getElementById("invoiceForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const form = e.target;
+
+    const invoiceData = {
+      clientName: form['clientName'].value,
+      clientEmail: form['clientEmail'].value,
+      invoiceNumber: form['invoiceNumber'].value,
+      issueDate: form['issueDate'].value,
+      dueDate: form['dueDate'].value,
+      items: []
+    };
+
+    const descriptions = form.querySelectorAll('input[name="description[]"]');
+    const quantities = form.querySelectorAll('input[name="quantity[]"]');
+    const unitPrices = form.querySelectorAll('input[name="unitPrice[]"]');
+
+    for (let i = 0; i < descriptions.length; i++) {
+      invoiceData.items.push({
+        description: descriptions[i].value,
+        quantity: parseInt(quantities[i].value),
+        unitPrice: parseFloat(unitPrices[i].value)
+      });
     }
 
-    function logout() {
-      localStorage.clear();
-      window.location.href = 'login.html';
-    }
+    try {
+      const response = await fetch("http://localhost:3000/api/invoices", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(invoiceData)
+      });
 
-    function addItem() {
-      const container = document.getElementById("itemsContainer");
-
-      const newRow = document.createElement("div");
-      newRow.className = "items-grid";
-
-      newRow.innerHTML = `
-        <input type="text" placeholder="Description" name="description[]" required />
-        <input type="number" placeholder="Qty" name="quantity[]" min="1" required />
-        <input type="number" placeholder="Unit Price" name="unitPrice[]" step="0.01" required />
-      `;
-
-      container.appendChild(newRow);
-    }
-
-    document.getElementById("invoiceForm").addEventListener("submit", async function (e) {
-      e.preventDefault();
-
-      const form = e.target;
-
-      const invoiceData = {
-        clientName: form.clientName.value,
-        clientEmail: form.clientEmail.value,
-        invoiceNumber: form.invoiceNumber.value,
-        issueDate: form.issueDate.value,
-        dueDate: form.dueDate.value,
-        items: []
-      };
-
-      const descriptions = form.querySelectorAll('input[name="description[]"]');
-      const quantities = form.querySelectorAll('input[name="quantity[]"]');
-      const unitPrices = form.querySelectorAll('input[name="unitPrice[]"]');
-
-      for (let i = 0; i < descriptions.length; i++) {
-        invoiceData.items.push({
-          description: descriptions[i].value,
-          quantity: parseInt(quantities[i].value),
-          unitPrice: parseFloat(unitPrices[i].value)
-        });
+      if (response.ok) {
+        alert("✅ Invoice saved successfully!");
+        form.reset();
+        document.getElementById("itemsContainer").innerHTML = "";
+        addItem();
+      } else {
+        alert("❌ Failed to save invoice.");
       }
+    } catch (err) {
+      console.error("Error saving invoice:", err);
+      alert("⚠️ Server error occurred.");
+    }
+  });
 
-      try {
-        const response = await fetch("http://localhost:3000/api/invoices", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(invoiceData)
-        });
+  // 👇 Optional: load one default row on page load
+  window.onload = addItem;
+</script>
 
-        if (response.ok) {
-          alert("✅ Invoice saved successfully!");
-          form.reset();
-          document.getElementById("itemsContainer").innerHTML = "";
-          addItem();
-        } else {
-          alert("❌ Failed to save invoice.");
-        }
-      } catch (err) {
-        console.error("Error saving invoice:", err);
-        alert("⚠️ Server error occurred.");
-      }
-    });
-  </script>
 </body>
 </html>

@@ -35,15 +35,16 @@
       font-size: 1.8rem;
     }
 
-    nav a {
+    nav a, .logout-btn {
       margin-left: 20px;
       color: #fff;
       text-decoration: none;
       font-weight: 500;
       transition: color 0.3s;
+      cursor: pointer;
     }
 
-    nav a:hover {
+    nav a:hover, .logout-btn:hover {
       color: #b2dfdb;
     }
 
@@ -109,23 +110,42 @@
       padding: 15px;
       margin-top: auto;
     }
-    p{
+
+    p {
       color: black;
     }
   </style>
 </head>
 <body>
+
+  <!-- 🔐 TOKEN CHECK -->
+  <script>
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("⚠️ Please login to access the dashboard.");
+      window.location.href = "login.html";
+    }
+
+    function logout() {
+      localStorage.removeItem("token");
+      localStorage.removeItem("userRole");
+      window.location.href = "login.html";
+    }
+  </script>
+
   <header>
     <h1>Invoice Management System</h1>
     <nav>
       <a href="contact.html">Contact Us</a>
+      <span class="logout-btn" onclick="logout()">Logout</span>
     </nav>
   </header>
+
   <header>
-  <a href="index.html">
-    <img src="logo.svg" alt="InvoiceSys Logo" width="200" height="60" />
-  </a>
-</header>
+    <a href="index.html">
+      <img src="logo.svg" alt="InvoiceSys Logo" width="200" height="60" />
+    </a>
+  </header>
 
   <div class="main-content">
     <div class="dashboard-actions">

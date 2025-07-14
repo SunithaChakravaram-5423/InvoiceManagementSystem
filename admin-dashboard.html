@@ -141,17 +141,21 @@
   </footer>
 
   <script>
-    const role = localStorage.getItem("userRole");
-    if (role !== "admin") {
+  // Check role before loading page
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    alert("❌ Unauthorized. Please login first.");
+    window.location.href = "login.html";
+  } else {
+    // Decode token to check role
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    if (payload.role !== "admin") {
       alert("❌ Unauthorized. Only admins can access this dashboard.");
       window.location.href = "login.html";
     }
-
-    function logout() {
-      localStorage.clear();
-      window.location.href = "login.html";
-    }
-  </script>
+  }
+</script>
 
 </body>
 </html>
