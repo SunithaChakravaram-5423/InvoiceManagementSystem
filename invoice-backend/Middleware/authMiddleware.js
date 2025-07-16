@@ -16,7 +16,12 @@ function authenticateToken(req, res, next) {
       return res.status(403).json({ error: 'Invalid or expired token' });
     }
 
-    req.user = user; // Attach decoded user info to request
+    req.user = {
+      id: user.id,
+      role: user.role,
+      email: user.email,
+    };
+ // Attach decoded user info to request
     next();
   });
 }
