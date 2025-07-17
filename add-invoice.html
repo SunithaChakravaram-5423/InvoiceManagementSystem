@@ -224,12 +224,21 @@
   const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
   const roleEl = document.getElementById("user-role");
 
-  if (!token || !loggedInUser || (loggedInUser.role !== "admin" && loggedInUser.role !== "editor")) {
-    alert("❌ Access Denied: Only Admins and Editors can access this page.");
+  if (!token || !loggedInUser || (loggedInUser.role !== "admin" && loggedInUser.role !== "editor" && loggedInUser.role !== "viewer")) {
+    alert("❌ Access Denied: Only Admins, Editors, and Viewers can access this page.");
     window.location.href = "login.html";
   } else {
     roleEl.textContent = loggedInUser.role.toUpperCase();
+
+    // 👇 Lock email for viewers
+    if (loggedInUser.role === "viewer") {
+      const emailInput = document.getElementById("clientEmail");
+      emailInput.value = loggedInUser.email;
+    }
   }
+
+
+  
 
   function logout() {
     localStorage.clear();

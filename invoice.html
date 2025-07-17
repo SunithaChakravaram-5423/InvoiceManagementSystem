@@ -2,72 +2,62 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Invoice Preview</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <title>Invoice Details</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
-      margin: 0;
       font-family: 'Poppins', sans-serif;
       background: linear-gradient(to right, #e0f7fa, #fce4ec);
+      margin: 0;
+      padding: 20px;
       color: #333;
-    }
-
-    .topbar {
-      background-color: #004d40;
-      color: white;
-      padding: 15px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .topbar button {
-      background-color: #00796b;
-      border: none;
-      padding: 8px 14px;
-      color: white;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .topbar button:hover {
-      background-color: #00695c;
     }
 
     .container {
       max-width: 800px;
-      margin: 30px auto;
-      background: white;
+      background: #fff;
+      margin: auto;
       padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     }
 
-    h1, h2 {
+    h2 {
+      color: #00695c;
       text-align: center;
-      color: #00796b;
     }
 
-    p {
-      font-size: 1rem;
-      margin: 10px 0;
+    .details p {
+      line-height: 1.6;
+      font-size: 16px;
     }
 
-    strong {
-      color: #555;
+    .status {
+      font-weight: bold;
+    }
+
+    .status.paid {
+      color: green;
+    }
+
+    .status.pending {
+      color: orange;
+    }
+
+    .status.overdue {
+      color: red;
     }
 
     table {
       width: 100%;
-      margin-top: 20px;
+      margin-top: 30px;
       border-collapse: collapse;
     }
 
     th, td {
       padding: 12px;
-      text-align: center;
-      border-bottom: 1px solid #ccc;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
     }
 
     th {
@@ -75,124 +65,132 @@
       color: white;
     }
 
-    tfoot td {
+    .grand-total {
+      text-align: right;
+      font-size: 18px;
+      margin-top: 15px;
       font-weight: bold;
     }
 
-    #invoice-status {
-      font-weight: bold;
+    .buttons {
+      margin-top: 30px;
+      text-align: center;
     }
 
-    .status-paid {
-      color: green;
+    .btn {
+      background-color: #004d40;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 0 10px;
     }
 
-    .status-unpaid {
-      color: orange;
-    }
-
-    .status-overdue {
-      color: red;
+    .btn:hover {
+      background-color: #00695c;
     }
   </style>
 </head>
 <body>
 
-  <div class="topbar">
-    👋 Welcome, <span id="user-role">USER</span>
-    <button onclick="logout()">🚪 Logout</button>
+<div class="container" id="invoice">
+  <h2>Invoice Details - <span id="invoice-number">...</span></h2>
+
+  <div class="details">
+    <p><strong>Client Name:</strong> <span id="client-name">...</span></p>
+    <p><strong>Client Email:</strong> <span id="client-email">...</span></p>
+    <p><strong>Issue Date:</strong> <span id="issue-date">...</span></p>
+    <p><strong>Due Date:</strong> <span id="due-date">...</span></p>
+    <p><strong>Status:</strong> <span class="status" id="status">...</span></p>
   </div>
 
-  <div class="container">
-    <h1 id="invoice-title">Invoice Details</h1>
+  <h3>Invoice Items</h3>
+  <table id="items-table">
+    <thead>
+      <tr>
+        <th>Description</th>
+        <th>Qty</th>
+        <th>Unit Price</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody id="item-body">
+      <!-- Items will be injected here -->
+    </tbody>
+  </table>
 
-    <p><strong>Invoice Number:</strong> <span id="invoice-number"></span></p>
-    <p><strong>Client Name:</strong> <span id="client-name"></span></p>
-    <p><strong>Client Email:</strong> <span id="client-email"></span></p>
-    <p><strong>Issue Date:</strong> <span id="issue-date"></span></p>
-    <p><strong>Due Date:</strong> <span id="due-date"></span></p>
-    <p><strong>Status:</strong> <span id="invoice-status"></span></p>
+  <div class="grand-total">Grand Total: ₹ <span id="grand-total">0.00</span></div>
 
-    <h2>Invoice Items</h2>
-    <table id="invoice-items">
-      <thead>
-        <tr>
-          <th>Description</th>
-          <th>Qty</th>
-          <th>Unit Price</th>
-          <th>Total</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+  <div class="buttons">
+    <button class="btn" onclick="window.print()">🖨️ Print Receipt</button>
   </div>
+</div>
 
-  <script>
-    const token = localStorage.getItem("token");
-    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+<script>
+  const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("loggedInUser"));
+  const params = new URLSearchParams(window.location.search);
+  const invoiceId = params.get("id");
 
-    if (!token || !loggedInUser) {
-      alert("❌ Unauthorized access. Please login.");
-      window.location.href = "login.html";
-    }
-
-    document.getElementById("user-role").textContent = loggedInUser.role.toUpperCase();
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const invoiceId = urlParams.get("id");
-
-    async function fetchInvoiceDetails() {
-  try {
-    const response = await fetch(`http://localhost:3000/api/invoices/${invoiceId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) throw new Error("Error fetching invoice");
-
-    const invoice = await response.json();
-    console.log("📦 Invoice Data Fetched from API:", invoice); // ✅ Step 4
-
-    // Update Invoice Info
-    document.getElementById("invoice-title").textContent = `Invoice Details - INV-${String(invoice.id).padStart(3, "0")}`;
-    document.getElementById("invoice-number").textContent = `INV-${String(invoice.id).padStart(3, "0")}`;
-    document.getElementById("client-name").textContent = invoice.client_name;
-    document.getElementById("client-email").textContent = invoice.client_email;
-    document.getElementById("issue-date").textContent = invoice.issue_date;
-    document.getElementById("due-date").textContent = invoice.due_date;
-
-    const statusSpan = document.getElementById("invoice-status");
-    statusSpan.textContent = invoice.status;
-    statusSpan.classList.add(`status-${invoice.status.toLowerCase()}`);
-
-    // Update Items Table
-    const tbody = document.querySelector("#invoice-items tbody");
-    tbody.innerHTML = "";
-    invoice.items.forEach(item => {
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${item.description}</td>
-        <td>${item.quantity}</td>
-        <td>${item.unit_price}</td>
-        <td>${item.total}</td>
-      `;
-      tbody.appendChild(row);
-    });
-
-  } catch (error) {
-    console.error("❌", error.message);
-    alert("❌ Error fetching invoice.");
+  if (!token || !user || !invoiceId) {
+    alert("⚠️ Unauthorized or Invalid Access");
+    window.location.href = "login.html";
   }
-}
 
+  async function fetchInvoice() {
+    try {
+      const res = await fetch(`http://localhost:3000/api/invoices/${invoiceId}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
 
-    function logout() {
-      localStorage.clear();
-      window.location.href = "login.html";
+      if (!res.ok) throw new Error("Invoice not found or access denied.");
+
+      const invoice = await res.json();
+
+      document.getElementById('invoice-number').textContent = `INV-${String(invoice.id).padStart(3, '0')}`;
+      document.getElementById('client-name').textContent = invoice.client_name;
+      document.getElementById('client-email').textContent = invoice.client_email;
+      document.getElementById('issue-date').textContent = invoice.issue_date;
+      document.getElementById('due-date').textContent = invoice.due_date;
+
+      const statusEl = document.getElementById('status');
+      const status = (invoice.status || "Pending").toLowerCase();
+      statusEl.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+      statusEl.className = `status ${status}`;
+
+      const tbody = document.getElementById("item-body");
+      tbody.innerHTML = "";
+      let grandTotal = 0;
+
+      invoice.items.forEach(item => {
+        const total = item.quantity * item.unit_price;
+        grandTotal += total;
+
+        const row = `
+          <tr>
+            <td>${item.description}</td>
+            <td>${item.quantity}</td>
+            <td>${item.unit_price}</td>
+            <td>${total.toFixed(2)}</td>
+          </tr>
+        `;
+        tbody.innerHTML += row;
+      });
+
+      document.getElementById("grand-total").textContent = grandTotal.toFixed(2);
+
+    } catch (err) {
+      alert("❌ " + err.message);
+      window.location.href = "view-invoices.html";
     }
+  }
 
-    fetchInvoiceDetails();
-  </script>
+  window.onload = fetchInvoice;
+</script>
+
 </body>
 </html>

@@ -13,21 +13,37 @@
     }
 
     header {
-      text-align: center;
-      padding: 25px 0;
-      background: #004d40;
-      color: white;
-    }
+  background: #004d40;
+  padding: 20px;
+  color: white;
+}
 
-    header h1 {
-      margin: 0;
-      font-size: 2.3rem;
-    }
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  text-align: left;
+}
 
-    header p {
-      margin: 5px 0 0;
-      font-size: 1.2rem;
-    }
+.logo {
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.header-text h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.header-text p {
+  margin: 5px 0 0;
+  font-size: 1rem;
+}
+
 
     .main-container {
       display: flex;
@@ -137,9 +153,14 @@
 <body>
 
   <header>
-    <h1>Invoice Management System</h1>
-    <p>Manage your invoices with ease and confidence</p>
-  </header>
+  <div class="header-content">
+    <img src="logo1.jpg" alt="Logo" class="logo" />
+    <div class="header-text">
+      <h1>Invoice Management System</h1>
+      <p>Manage your invoices with ease and confidence</p>
+    </div>
+  </div>
+</header>
 
   <!-- Flex layout -->
   <div class="main-container">
@@ -149,6 +170,7 @@
 
     <div class="login-container">
       <h2>Login</h2>
+
       <form id="loginForm">
         <input type="email" id="email" name="email" placeholder="Email" required />
         <input type="password" id="password" name="password" placeholder="Password" required />
@@ -173,46 +195,45 @@
   </footer>
 
   <script>
-  document.getElementById('loginForm').addEventListener('submit', async function (e) {
-  e.preventDefault();
+    document.getElementById('loginForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
 
-  const email = document.querySelector('input[name="email"]').value.trim().toLowerCase();
-  const password = document.querySelector('input[name="password"]').value;
-  const messageEl = document.getElementById('message');
+      const email = document.querySelector('input[name="email"]').value.trim().toLowerCase();
+      const password = document.querySelector('input[name="password"]').value;
+      const messageEl = document.getElementById('message');
 
-  try {
-    const response = await fetch("http://localhost:3000/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+      try {
+        const response = await fetch("http://localhost:3000/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
 
-    const data = await response.json();
+        const data = await response.json();
 
-    if (response.ok) {
-      localStorage.setItem("token", data.token);
-      localStorage.setItem('loggedInUser', JSON.stringify({ email, role: data.role }));
-      messageEl.style.color = "green";
-      messageEl.textContent = "✅ Login successful! Redirecting...";
+        if (response.ok) {
+          localStorage.setItem("token", data.token);
+          localStorage.setItem('loggedInUser', JSON.stringify({ email, role: data.role }));
+          messageEl.style.color = "green";
+          messageEl.textContent = "✅ Login successful! Redirecting...";
 
-      if (data.role === "admin") {
-        window.location.href = "admin-dashboard.html";
-      } else if (data.role === "editor") {
-        window.location.href = "add-invoice.html";
-      } else {
-        window.location.href = "view-invoices.html";
+          if (data.role === "admin") {
+            window.location.href = "admin-dashboard.html";
+          } else if (data.role === "editor") {
+            window.location.href = "add-invoice.html";
+          } else {
+            window.location.href = "view-invoices.html";
+          }
+        } else {
+          messageEl.style.color = "red";
+          messageEl.textContent = data.error || "❗ Login failed";
+        }
+      } catch (err) {
+        messageEl.style.color = "red";
+        messageEl.textContent = "❗ Server error. Try again later.";
       }
-    } else {
-      messageEl.style.color = "red";
-      messageEl.textContent = data.error || "❗ Login failed";
-    }
-  } catch (err) {
-    messageEl.style.color = "red";
-    messageEl.textContent = "❗ Server error. Try again later.";
-  }
-});
-
-</script>     
+    });
+  </script>
 
 </body>
 </html>
