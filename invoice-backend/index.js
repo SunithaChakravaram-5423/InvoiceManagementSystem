@@ -27,7 +27,7 @@ db.connect(err => {
     console.error('❌ MySQL error:', err);
     return;
   }
-  console.log('✅ Connected to MySQL database');
+  console.log('Successfully Connected to MySQL database!!');
 });
 
 const dbPromise = db.promise();
@@ -134,11 +134,18 @@ app.post('/api/invoices', authenticateToken, (req, res) => {
 });
 
 // 🔐 Get All Invoices
+// 🔐 Get All Invoices
 app.get('/api/invoices', authenticateToken, (req, res) => {
   const user = req.user;
+
   let sql = `
     SELECT invoices.*, 
-           IFNULL(SUM(invoice_items.unit_price * invoice_items.quantity), 0) AS total_amount
+           IFNULL(SUM(invoice_items.unit_price * invoice_items.quantity), 0) AS total_amount,
+           CASE 
+             WHEN invoices.status = 'Paid' THEN 'Paid'
+             WHEN invoices.due_date < CURDATE() THEN 'Overdue'
+             ELSE 'Pending'
+           END AS status
     FROM invoices
     LEFT JOIN invoice_items ON invoices.id = invoice_items.invoice_id
   `;
@@ -156,6 +163,7 @@ app.get('/api/invoices', authenticateToken, (req, res) => {
     res.json(results);
   });
 });
+
 
 // 🔐 Get Invoice by ID
 app.get('/api/invoices/:id', authenticateToken, (req, res) => {
@@ -218,5 +226,5 @@ app.delete('/api/invoices/:id', authenticateToken, (req, res) => {
 
 // Start Server
 app.listen(PORT, () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}`);
+  console.log(`Server running at http://localhost:${PORT}`);
 });

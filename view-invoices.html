@@ -112,6 +112,22 @@
       max-width: 500px;
       margin: 0 auto 30px;
     }
+    tr td:nth-child(6)[style*="color:red"] {
+      background-color: #ffeaea;
+    }
+    .badge {
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 14px;
+      color: white;
+      display: inline-block;
+    }
+    .badge.paid { background-color: #2e7d32; }
+    .badge.pending { background-color: #fb8c00; }
+    .badge.overdue { background-color: #c62828; }
+
+
   </style>
 </head>
 <body>
@@ -216,7 +232,7 @@
           <td>${inv.client_email}</td>
           <td>${inv.issue_date}</td>
           <td>${inv.due_date}</td>
-          <td style="color:${color}; font-weight:bold">${status}</td>
+          <td><span class="badge ${status.toLowerCase()}">${status}</span></td>
           <td>${actionButtons}</td>
         </tr>
       `;

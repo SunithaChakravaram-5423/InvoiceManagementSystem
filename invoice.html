@@ -127,7 +127,6 @@
     <button class="btn" onclick="window.print()">🖨️ Print Receipt</button>
   </div>
 </div>
-
 <script>
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("loggedInUser"));
@@ -137,6 +136,12 @@
   if (!token || !user || !invoiceId) {
     alert("⚠️ Unauthorized or Invalid Access");
     window.location.href = "login.html";
+  }
+
+  // ✅ 1. Add this function to convert UTC to IST
+  function formatToIST(utcDateStr) {
+    const date = new Date(utcDateStr);
+    return date.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
   }
 
   async function fetchInvoice() {
@@ -154,8 +159,10 @@
       document.getElementById('invoice-number').textContent = `INV-${String(invoice.id).padStart(3, '0')}`;
       document.getElementById('client-name').textContent = invoice.client_name;
       document.getElementById('client-email').textContent = invoice.client_email;
-      document.getElementById('issue-date').textContent = invoice.issue_date;
-      document.getElementById('due-date').textContent = invoice.due_date;
+
+      // ✅ 2. Use IST formatter here
+      document.getElementById('issue-date').textContent = formatToIST(invoice.issue_date);
+      document.getElementById('due-date').textContent = formatToIST(invoice.due_date);
 
       const statusEl = document.getElementById('status');
       const status = (invoice.status || "Pending").toLowerCase();
@@ -191,6 +198,7 @@
 
   window.onload = fetchInvoice;
 </script>
+
 
 </body>
 </html>
