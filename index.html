@@ -3,167 +3,61 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="login.css">
   <title>Invoice Management System</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap" rel="stylesheet" />
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #e0f2f1, #fce4ec);
-      color: #333;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-
-    header {
-      background-color: #025046;
-      color: white;
-      padding: 20px 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    header h1 {
-      font-size: 1.8rem;
-    }
-
-    nav a, .logout-btn {
-      margin-left: 20px;
-      color: #fff;
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s;
-      cursor: pointer;
-    }
-
-    nav a:hover, .logout-btn:hover {
-      color: #b2dfdb;
-    }
-
-    .main-content {
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 20px;
-    }
-
-    .dashboard-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 22px;
-      margin-top: 29px;
-    }
-
-    .btn {
-      text-decoration: none;
-      padding: 14px 28px;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 1.1rem;
-      transition: all 0.3s;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-
-    .primary-btn {
-      background: #e1c810;
-      color: #fff;
-    }
-
-    .primary-btn:hover {
-      background: #cab053;
-    }
-
-    .secondary-btn {
-      background: #62178e;
-      color: #fff;
-    }
-
-    .secondary-btn:hover {
-      background: #c040d6;
-    }
-
-    .about-section {
-      margin-top: 60px;
-      max-width: 700px;
-      text-align: center;
-    }
-
-    .about-section h2 {
-      color: #00695c;
-      margin-bottom: 10px;
-    }
-
-    footer {
-      background-color: #004d40;
-      color: #fff;
-      text-align: center;
-      padding: 15px;
-      margin-top: auto;
-    }
-
-    p {
-      color: black;
-    }
-  </style>
 </head>
 <body>
 
-  <!-- 🔐 TOKEN CHECK -->
-  <script>
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("⚠️ Please login to access the dashboard.");
-      window.location.href = "login.html";
-    }
-
-    function logout() {
-      localStorage.removeItem("token");
-      localStorage.removeItem("userRole");
-      window.location.href = "login.html";
-    }
-  </script>
-
-  <header>
-    <h1>Invoice Management System</h1>
-    <nav>
-      <a href="contact.html">Contact Us</a>
-      <span class="logout-btn" onclick="logout()">Logout</span>
-    </nav>
-  </header>
-
-  <header>
-    <a href="index.html">
-      <img src="logo.svg" alt="InvoiceSys Logo" width="200" height="60" />
-    </a>
-  </header>
-
-  <div class="main-content">
-    <div class="dashboard-actions">
-      <a href="add-invoice.html" class="btn primary-btn">➕ Add New Invoice</a>
-      <a href="view-invoices.html" class="btn secondary-btn">📄 View Invoices</a>
+ <header>
+  <div class="header-top">
+    <div class="header-content">
+      <img src="logo1.jpg" alt="Logo" class="logo" />
+      <div class="header-text">
+        <h1>Invoice Management System</h1>
+        <p>Manage your invoices with ease and confidence</p>
+      </div>
     </div>
-
-    <section class="about-section" id="about">
-      <h2>About Us</h2>
-      <p>
-        This Invoice Management System helps you manage all your invoices efficiently.
-        Generate, view, and track your billing records with ease using our user-friendly dashboard.
-      </p>
-    </section>
   </div>
 
+  <nav class="navbar">
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="register.html">Register</a></li>
+    <li><a href="login.html">Login</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+</nav>
+</header>
+
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>Welcome to the Invoice Management System</h1>
+    <p>Simplify, Track, and Manage Your Invoices Easily</p>
+    <img src="ims_picture.png" alt="Dashboard Preview" />
+  </section>
+
+  <!-- About Section -->
+  <section class="about">
+    <h2>About Our System</h2>
+    <p>
+      Our Invoice Management System helps small and medium businesses manage their billing efficiently. 
+      You can create, view, and manage invoices all in one place. Role-based access ensures that both 
+      admins and users have appropriate access to functionalities.
+    </p>
+  </section>
+
+  <!-- Footer -->
   <footer>
-    &copy; 2025 Invoice Management System | Designed by Sunitha Chakravaram!!
+    <div>
+      &copy; 2025 Invoice Management System. All rights reserved.
+    </div>
+    <div>
+      <a href="contact.html">Contact</a>
+      <a href="register.html">Register</a>
+      <a href="login.html">Login</a>
+    </div>
   </footer>
+
 </body>
 </html>

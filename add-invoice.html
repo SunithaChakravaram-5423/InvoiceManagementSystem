@@ -187,10 +187,6 @@
           <input type="email" name="clientEmail" required />
         </div>
         <div>
-          <label>Invoice Number</label>
-          <input type="text" name="invoiceNumber" required />
-        </div>
-        <div>
           <label>Issue Date</label>
           <input type="date" name="issueDate" required />
         </div>
@@ -237,9 +233,6 @@
     }
   }
 
-
-  
-
   function logout() {
     localStorage.clear();
     window.location.href = 'login.html';
@@ -268,7 +261,6 @@
     const invoiceData = {
       clientName: form['clientName'].value,
       clientEmail: form['clientEmail'].value,
-      invoiceNumber: form['invoiceNumber'].value,
       issueDate: form['issueDate'].value,
       dueDate: form['dueDate'].value,
       items: []

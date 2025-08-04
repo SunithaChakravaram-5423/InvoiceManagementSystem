@@ -174,7 +174,7 @@
   let allInvoices = [];
 
   // ✅ Allow both Viewer and Admin
-  if (!token || !loggedInUser || !["viewer", "admin"].includes(loggedInUser.role)) {
+  if (!token || !loggedInUser || !["viewer", "admin", "editor"].includes(loggedInUser.role)) {
     alert("❌ Access Denied");
     window.location.href = "login.html";
   } else {

@@ -1,0 +1,94 @@
+body {
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(to right, #e0f7fa, #fce4ec);
+  margin: 0;
+  padding: 20px;
+  color: #333;
+}
+
+.container {
+  max-width: 800px;
+  background: #fff;
+  margin: auto;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  color: #00695c;
+  text-align: center;
+}
+
+.details p {
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+.status {
+  font-weight: bold;
+}
+
+.status.paid {
+  color: green;
+}
+
+.status.pending {
+  color: orange;
+}
+
+.status.overdue {
+  color: red;
+}
+
+table {
+  width: 100%;
+  margin-top: 30px;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+th {
+  background-color: #004d40;
+  color: white;
+}
+
+.grand-total {
+  text-align: right;
+  font-size: 18px;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+.buttons {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.btn {
+  background-color: #004d40;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 0 10px;
+}
+
+.btn:hover {
+  background-color: #00695c;
+}
+
+/* ✅ Hide buttons during print */
+@media print {
+  .buttons {
+    display: none;
+  }
+}
